@@ -1,0 +1,15 @@
+{
+    "purple":{
+        "hp":10,
+        "size":1
+    },
+    "purple2":{
+        "hp":30,
+        "size":2
+    },
+    "purple5":{
+        "hp":3000,
+        "size":2,
+        "direction":"stand"
+    },
+}

@@ -81,7 +81,7 @@
   },
   {
     "__type__": "cc.Sprite",
-    "_name": "",
+    "_name": "enemy<Sprite>",
     "_objFlags": 0,
     "node": {
       "__id__": 1
@@ -119,7 +119,7 @@
       "__id__": 1
     },
     "_enabled": true,
-    "label": null,
+    "moveDuration": 10,
     "_id": ""
   },
   {

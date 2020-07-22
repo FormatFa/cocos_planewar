@@ -39,6 +39,7 @@ export default class Game extends cc.Component {
     onLoad () {
 
 
+
         this.initData()
         this.gameWidth = this.node.width
         this.gameHeight = this.node.height
@@ -46,8 +47,13 @@ export default class Game extends cc.Component {
         this.generateEnemySchedule()
 
 
+        this.loadResources()
     }
 
+    // 加载资源
+    loadResources() {
+
+    }
 
 
     // 初始化数据

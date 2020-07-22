@@ -13,4 +13,42 @@ Canvas 大小: 640x960
 
 - 
 
------ 轰炸
+player
+    hp
+
+enemy
+    - 图片
+    - speed 移动速度
+    - hp 血量
+    - harm 攻击
+    - size 体质大小
+
+
+bullets
+    direction 发射的方向，UP和DOWN，或者其他
+    - 运动轨迹
+    belong ： 发送者
+    harm： 伤害
+    speed: 速度
+
+    star:
+
+level 关卡:
+
+1: 
+    
+
+2:
+
+3:
+
+4:
+
+
+
+定义item模板的
+- 定义节点，label那些
+- 定义脚本，添加脚本到节点
+- 保存为prefab
+
+    

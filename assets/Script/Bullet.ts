@@ -87,7 +87,7 @@ export default class Bullet extends cc.Component {
     }
     // 碰撞结束了
     onCollisionExit(other:cc.BoxCollider,self:cc.BoxCollider)  {
-
+        
     }
 
 

@@ -84,5 +84,7 @@ export default class Enemy extends cc.Component {
     removeEnemy() {
         this.game.recycleEnemy(this.node)
     }
+
+    
     // update (dt) {}
 }

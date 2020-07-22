@@ -95,6 +95,10 @@ export default class Player extends cc.Component {
                 let biggerAction = cc.scaleTo(2,5,5)
                 this.node.runAction(biggerAction)
                 break;
+            case cc.macro.KEY.p:
+                let rotateAction = cc.rotateBy(1,360).repeatForever()
+                this.node.runAction(rotateAction)
+                
         }
 
     }
