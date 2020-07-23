@@ -1,0 +1,23 @@
+{
+    "purple":{
+        "hp":10,
+        "size":1,
+        "spriteFrame":"PurpleMonster",
+        "direction":"down",
+        "bulletId":"star"
+    },
+    "purple2":{
+        "hp":30,
+        "size":2,
+        "spriteFrame":"PurpleMonster",
+        "direction":"down",
+        "bulletId":"star"
+    },
+    "purple5":{
+        "hp":3000,
+        "size":2,
+        "direction":"stand",
+        "spriteFrame":"PurpleMonster",
+        "bulletId":"star"
+    }
+}

@@ -1,0 +1,9 @@
+{
+
+    "star":{
+        "harm":5,
+        "spriteFrame":"bullet",
+        "size":1
+    }
+
+}

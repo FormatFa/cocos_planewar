@@ -6,13 +6,10 @@
 //  - https://docs.cocos.com/creator/manual/en/scripting/life-cycle-callbacks.html
 
 import Game from "./Game";
-
+import Direction from  './utils/Direction'
 const {ccclass, property} = cc._decorator;
 
-// 移动方向
-enum Direction {
-    UP,DOWN,LEFT,RIGHT,STAND
-}
+
 @ccclass
 export default class Player extends cc.Component {
 

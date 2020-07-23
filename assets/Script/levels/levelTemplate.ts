@@ -8,7 +8,7 @@
 const {ccclass, property} = cc._decorator;
 
 @ccclass
-export default class NewClass extends cc.Component {
+export default class levelTemplate extends cc.Component {
 
     @property
     level = 0
@@ -19,6 +19,9 @@ export default class NewClass extends cc.Component {
     @property(cc.Label)
     levelName:cc.Label = null
 
+    _data = null
+    // 点击后回调
+    _callback:(levelData:any)=>void
     
 
     // LIFE-CYCLE CALLBACKS:
@@ -29,11 +32,18 @@ export default class NewClass extends cc.Component {
 
     }
 
+    // 点击事件
+    onClick() {
+        console.log("level template click:"+this.levelText.string)
+        this._callback(this._data)
+    }
     // 数据接收处理后
-    init(data) {
+    init(data,callback:(levelData:any)=>void) {
         this.levelText.string = "L"+data.level
         this.levelName.string = data.name
 
+        this._data = data
+        this._callback = callback
     }
 
     // update (dt) {}

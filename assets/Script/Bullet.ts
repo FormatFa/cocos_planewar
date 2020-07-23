@@ -21,6 +21,8 @@ export default class Bullet extends cc.Component {
 
     from:cc.Node //来自谁的子弹
     // LIFE-CYCLE CALLBACKS:
+    _harm = 1 //伤害
+    _size = 1 //缩放倍数
     
 
     onLoad () {
@@ -34,22 +36,35 @@ export default class Bullet extends cc.Component {
 
     }
 
+    // 设置
+    equip(data,spriteFrame:cc.SpriteFrame) {
+
+        this.getComponent(cc.Sprite).spriteFrame = spriteFrame
+
+        this._harm = data['harm']
+        this._size = data['size']
+
+        this.node.setScale(this._size)
+    }
 
     // 开始移动子弹
     fly() {
         
         this.moveAction = this.loadAction()
-        
           // 飞行轨迹
         this.node.runAction(this.moveAction)
         
+    }
+    getHarm() {
+        return this._harm;
     }
     // update (dt) {}
 
     // 加载动作，根据不同方，运动的方向也不一样
     loadAction() {
         
-    let callback = cc.callFunc(this.removeBullet,this)
+    let callback = cc.callFunc(this._removeBullet,this)
+
     let forwards = null;
 
      if(this.from.name=="enemy")    {
@@ -62,7 +77,9 @@ export default class Bullet extends cc.Component {
     return cc.sequence(forwards,callback)
     }
 
-    removeBullet() {
+
+
+    _removeBullet() {
         
         this.game.recycleBullet(this.node)
     }
@@ -72,14 +89,13 @@ export default class Bullet extends cc.Component {
     onCollisionEnter(other:cc.BoxCollider,self:cc.BoxCollider) {
 
 
-        let fromname = this.from.name
-        let othername = other.node.name
+        // let fromname = this.from.name
+        // let othername = other.node.name
 
-        // player子弹和敌人相撞时
-        if( fromname=="player" && othername=="enemy") {
-            other.getComponent("Enemy").die() //敌人消失
-        }        
-         
+        // // player子弹和敌人相撞时
+        // if( fromname=="player" && othername=="enemy") {
+        //     other.getComponent("Enemy").die() //敌人消失
+        // }        
     }  
     // 产生还没结束
     onCollisionStay(other:cc.BoxCollider,self:cc.BoxCollider)  {
