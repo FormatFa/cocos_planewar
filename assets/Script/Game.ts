@@ -35,6 +35,8 @@ export default class Game extends cc.Component {
     @property(cc.Label)
     enemyInfoLabel:cc.Label = null
 
+    @property(cc.Label)
+    readyText:cc.Label
 
 
     // 敌人贴图资源
@@ -145,8 +147,18 @@ export default class Game extends cc.Component {
 
 
     startGame() {
+        // 显示倒计时
+        let start = 3
+        this.schedule(()=>{
+            if(start==0) {
 
-        
+
+            }else {
+
+            }
+            start-=1
+        },1,2,0)
+
 
     }
 
