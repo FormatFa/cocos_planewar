@@ -8,6 +8,8 @@
 import Bullet from "./Bullet";
 import {getLevelData} from './data/Status'
 import Enemy from "./Enemy";
+import {EnemyInfo,EnemyFactory,BaseEnemy} from "./enemy/EnemyFactory"
+import Helpers from './utils/Helpers'
 const {ccclass, property} = cc._decorator;
 
 @ccclass
@@ -31,7 +33,7 @@ export default class Game extends cc.Component {
 
     // 当前波敌人数据
     @property(cc.Label)
-    enemyInfoLabel:cc.Label
+    enemyInfoLabel:cc.Label = null
 
 
 
@@ -59,7 +61,11 @@ export default class Game extends cc.Component {
 
     gameWidth = 0
     gameHeight = 0
-    // LIFE-CYCLE CALLBACKS:
+    
+
+
+    // 
+    isRunning=false
 
     onLoad () {
 
@@ -94,6 +100,7 @@ export default class Game extends cc.Component {
             console.log(this._enemiesSpriteFrame    )
             // 生成敌人
             this.generateEnemySchedule()
+            // this.generateEnemyNew(3,"purple") //测试生成enemu
             })
         cc.resources.loadDir("bullets",cc.SpriteFrame,(error:Error,assets:cc.Asset[])=>{
             console.log("加载bullets资源完成..")
@@ -137,23 +144,23 @@ export default class Game extends cc.Component {
     }
 
 
-    start () {
+    startGame() {
+
+        
+
+    }
+
+    pauseGame() {
+
+    }
+    endGame() {
 
     }
 
 
 
-    // 发射星星的子弹
-    openStarFire(who:cc.Node) {
-        this.openFire(who, this.bulletStarPool, this.bulletStarPrefab)
 
-    }
-    openCarrotFire(who:cc.Node) {
-        this.openFire(who, this.bulletPool, this.bulletPrefab)
-    }
-
-
-    // 发射子弹
+    // 发射子弹 。 在节点下生成子弹节点，执行动作飞行。
     attack(who:cc.Node,bulletId:string) {
         let bulletData = this._bulletsdata[bulletId]
 
@@ -184,118 +191,65 @@ export default class Game extends cc.Component {
         }
 
     }
-    /**
-     * 
-     * @param who 
-     * @param bulletPool 
-     * @param prefab 
-     */
-    openFire(who:cc.Node,bulletPool:cc.NodePool,prefab:cc.Prefab) {
-
-        this.schedule(function(){
-
-            // 如果敌人击中了消失了，就取消定时器
-            if(who.name=="enemy" && who.getComponent("Enemy").isDie)
-            {
-                this.unschedule(this.callback)
-            }
-
-            let bullet:cc.Node = null;
-            if(bulletPool.size()>0)
-            {
-                bullet = bulletPool.get()
-            }
-            else
-            {
-                bullet = cc.instantiate(prefab)
-                bullet.getComponent("Bullet").game = this
-            }
-            
-            bullet.getComponent("Bullet").from = who
-
-            // 位置是0就是和player一样，player的锚点在中间，要在上面显示再加上高度一半
-            if(who.name=="enemy")
-             bullet.setPosition(cc.v2(who.x, who.y-who.height/2))
-            else bullet.setPosition(cc.v2(who.x, who.y+who.height/2))   
-
-            this.node.addChild(bullet)
-            bullet.getComponent("Bullet").fly()
-            // 每隔1/5秒，发射一个，执行4+1次
-        },1/5,4,0)
-
-    }
-
+    
 
 
     // 根据关卡敌人数据 定时生成敌人
     generateEnemySchedule() {
 
         // this.generateEnemy(3,"purple2")
-        
         this.schedule(() =>{
+            console.log(`生成第${this.wave} 波敌人中...`)
             let waveEnemies = this.enemies[this.wave]
-            this.generateEnemy(waveEnemies['count'],waveEnemies['enemyId'])
+            this.generateEnemyNew(waveEnemies['count'],waveEnemies['enemyId'])
             this.wave +=1;
         },6,this.enemies.length-1,0)
     }
 
-    // 根据配置生成敌人，随机出现指定数量，类型的
-    generateEnemy(count:number,enemyId:string) {
+    generateEnemyNew(count:number,enemyId:string) {
+        
+        let enemyInfo = this._enemiesdata[enemyId] as EnemyInfo
 
-        this.enemyInfoLabel.string = `wave:${this.wave} count:${count} enemyId: ${enemyId}`
-        let enemydata = this._enemiesdata[enemyId]
+        console.log("生成新敌人，敌人信息:")
+        console.log(enemyInfo)
+     
 
-        console.log("generate enemy...")
-        for(let i=0;i<count;i+=1)
-        {
+        // 生成敌人
+        for(let i =0;i<count;i+=1) {
 
-            // 锚点在中心，x随机出现在正负一半里
-            let randX =  Math.random()*this.gameWidth-this.gameWidth/2;
-            // 在屏幕后面一半距离里随机出现
-            let randY =  this.gameHeight/2+  Math.random()*(this.gameHeight/2)
+            // 根据类型构造敌人对象，每个敌人new一个enemy对象
+            let enemy = EnemyFactory.getEnemy(enemyInfo.type)
+            enemy.game = this
+            enemy.enemyInfo = enemyInfo
 
-            let enemy:cc.Node = null;
+            let enemyNode:cc.Node = null;
 
             if(this.enemyPool.size()>0)
             {
-                enemy = this.enemyPool.get()
+                enemyNode = this.enemyPool.get()
             }
             else {
-                enemy = cc.instantiate(this.enemyPrefab)
-                enemy.getComponent(Enemy).game = this
+                enemyNode = cc.instantiate(this.enemyPrefab)
+                enemyNode.getComponent(Enemy).game = this
             }
-            let comp = enemy.getComponent(Enemy)
-
-            comp.equip(
-                this._enemiesSpriteFrame[enemydata['spriteFrame']],enemydata['hp'],enemydata['size'],enemydata['direction'],
-                enemydata['bulletId']
-
-            )
-
-            enemy.setPosition(randX,randY)
             
-            this.node.addChild(enemy)
-            comp.fly() //启动飞机
+            // 设置敌人信息到组件
+            let enemyComp = enemyNode.getComponent(Enemy)
+            enemyComp.setEnemy(enemy)
+
+            // 添加子弹到屏幕
+            this.node.addChild(enemyNode)
+            // 启动
+            enemyComp.doFly()
             
         }
 
 
     }
 
+  
+
    
-
-    // getEnemy():Enemy{
-
-    //     let enemy =
-    //     if(this.enemyPool.size()>0)
-    //         {
-    //             enemy = this.enemyPool.get()
-    //         }
-    //         else {
-    //             enemy = cc.instantiate(this.enemyPrefab)
-    //             enemy.getComponent("Enemy").game = this
-    //         }
-    // }
     // 回收子弹
     recycleBullet(bullet:cc.Node) {
         
@@ -312,6 +266,10 @@ export default class Game extends cc.Component {
 
 
 
+    
+    start () {
+
+    }
      update (dt) {
          
      }

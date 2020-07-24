@@ -7,22 +7,16 @@
 
 const {ccclass, property} = cc._decorator;
 
-@ccclass
-export default class NewClass extends cc.Component {
+// 工具类
+export default class Helpers {
 
-    @property(cc.JsonAsset)
-    levels: cc.JsonAsset = null; //关卡数据
+    /**
+     * 产生指定范围内的随机数
+     */
+    static  randomRange(start:number,end:number) {
 
-
-    // LIFE-CYCLE CALLBACKS:
-
-    onLoad () {
-        
+        return start + Math.floor(Math.random()*(end-start))
     }
 
-    start () {
 
-    }
-
-    // update (dt) {}
 }

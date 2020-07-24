@@ -2,8 +2,17 @@
 
     "star":{
         "harm":5,
+        "spriteFrame":"star",
+        "size":1
+    },
+    "bullet":{
+        "harm":5,
         "spriteFrame":"bullet",
         "size":1
+    },
+    "rabbit":{
+        "harm":5,
+        "spriteFrame":"rabbit",
+        "size":1
     }
-
 }

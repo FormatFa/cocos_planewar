@@ -78,20 +78,24 @@ export default class Bullet extends cc.Component {
     }
 
 
+    // 回收子弹
+    doDie() {
+        this._removeBullet()
+    }
 
     _removeBullet() {
         
         this.game.recycleBullet(this.node)
+        
     }
 
 
     // 碰撞产生时
     onCollisionEnter(other:cc.BoxCollider,self:cc.BoxCollider) {
 
+        
 
-        // let fromname = this.from.name
-        // let othername = other.node.name
-
+    
         // // player子弹和敌人相撞时
         // if( fromname=="player" && othername=="enemy") {
         //     other.getComponent("Enemy").die() //敌人消失

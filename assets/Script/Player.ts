@@ -7,9 +7,15 @@
 
 import Game from "./Game";
 import Direction from  './utils/Direction'
+import Bullet from './Bullet'
 const {ccclass, property} = cc._decorator;
 
 
+class PlayerInfo {
+    constructor(public hp:number,public bulletId:string) {
+
+    }
+}
 @ccclass
 export default class Player extends cc.Component {
 
@@ -21,20 +27,11 @@ export default class Player extends cc.Component {
 
     @property(Game)
     game:Game = null
-
     
-
-    // 子弹对象池
-    bulletPool:cc.NodePool
+    playerInfo:PlayerInfo
 
     nowDirection:Direction = Direction.STAND //当前移动方向
-    isRunning = false
-
-    canvasWidth=0
-    canvasHeight=0
-
-
-
+    
     // LIFE-CYCLE CALLBACKS:
 
     onLoad () {
@@ -42,22 +39,10 @@ export default class Player extends cc.Component {
         cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN,this.onKeyDown,this)
         cc.systemEvent.on(cc.SystemEvent.EventType.KEY_UP,this.onKeyUp,this)
 
-        this.canvasWidth = this.node.parent.width;
-        this.canvasHeight = this.node.parent.height;
-
-
-        this.bulletPool = new cc.NodePool()
-        for(let i=0;i<30;i+=1) {
-            let bullet = cc.instantiate(this.bulletPrefab)
-            bullet.getComponent("Bullet").player = this
-            this.bulletPool.put(bullet)
-        }
-
+        this.playerInfo = new PlayerInfo(100,"carrot")
         
     }
-    startGame() {
-        
-    }
+  
 
     onDestroy(){
 
@@ -84,9 +69,8 @@ export default class Player extends cc.Component {
                 this.nowDirection = Direction.DOWN;
                 break;
             case cc.macro.KEY.space:
-                // this.openFire()
                 // 
-                this.game.openCarrotFire(this.node)
+                this.game.attack(this.node,this.playerInfo.bulletId)
                 break;
             case cc.macro.KEY.b:
                 let biggerAction = cc.scaleTo(2,5,5)
@@ -109,53 +93,29 @@ export default class Player extends cc.Component {
     }
 
 
+    
+    onCollisionEnter(other:cc.BoxCollider,self:cc.BoxCollider) {
 
-    // 发射
-    openFire() {
-        console.log("open fire..")
-        // let node = cc.instantiate(this.bulletPrefab)
-        // 每隔一会发射一次
-        this.schedule(function(){
-            let bullet = null;
-            if(this.bulletPool.size()>0)
-            {
-                bullet = this.bulletPool.get()
-            }
-            else
-            {
-                bullet = cc.instantiate(this.bulletPrefab)
-                bullet.getComponent("Bullet").player = this
-            }
-            // bullet是player的child,位置是0就是和player一样
-            bullet.setPosition(cc.v2(0,this.node.height/2))
-            this.node.addChild(bullet)
-            bullet.getComponent("Bullet").fly()
-        },1/5,5,0)
-        // for(let i=0;i<5;i+=1) {
-        //     let bullet = null;
-        //     if(this.bulletPool.size()>0)
-        //     {
-        //         bullet = this.bulletPool.get()
-        //     }
-        //     else
-        //     {
-        //         bullet = cc.instantiate(this.bulletPrefab)
-        //         bullet.getComponent("Bullet").player = this
-        //     }
-        //     // bullet是player的child,位置是0就是和player一样
-        //     bullet.setPosition(cc.v2(0,this.node.height/2))
-        //     this.node.addChild(bullet)
-        //     bullet.getComponent("Bullet").fly()
-        // }
+        // 对方子弹击中
+            if(other.node.name=="bullet") {
+                
+                let bullet:Bullet = other.node.getComponent(Bullet)
+
+                console.log("碰撞到enemy:"+bullet.from.name)
+                
+                if(bullet.from==null)return;
+                // 对方的子弹
+                if(bullet.from.name=="enemy") {
 
 
+                    // 移动掉子弹，消失
+                    bullet.node.x=3000
+                    
+                }
+            }      
+    } 
 
-
-    }
-
-    recycleBullet(bullet) {
-        this.bulletPool.put(bullet)
-    }
+        
 
     update (dt) {
 

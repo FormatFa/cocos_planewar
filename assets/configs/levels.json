@@ -3,7 +3,7 @@
         {
         "level":1,
         "name":"ff",
-        "enemies":[{"count":6,"repeat":2,"enemyId":"purple"},{"count":2,"repeat":2,"enemyId":"purple2"}]
+        "enemies":[{"count":6,"repeat":2,"enemyId":"purple"},{"count":1,"repeat":2,"enemyId":"purple5"}]
         },
         {
         "level":2,

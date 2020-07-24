@@ -133,13 +133,13 @@
     "tag": 0,
     "_offset": {
       "__type__": "cc.Vec2",
-      "x": 0,
-      "y": 0
+      "x": 2.3,
+      "y": -0.5
     },
     "_size": {
       "__type__": "cc.Size",
-      "width": 60,
-      "height": 72
+      "width": 30.7,
+      "height": 34.9
     },
     "_id": ""
   },
